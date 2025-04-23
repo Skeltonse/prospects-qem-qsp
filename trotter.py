@@ -6,8 +6,9 @@ import os
 import pickle
 
 from functools import lru_cache
+
 dt = 0.1
-N = 6
+N = 8
 
 def generate_hamiltonian(N, J_xx=(0.1*-0.2*7/10), J_zz=-0.2*7/10, h=(0.1*-0.2*7/10)):
 
@@ -21,46 +22,19 @@ def generate_hamiltonian(N, J_xx=(0.1*-0.2*7/10), J_zz=-0.2*7/10, h=(0.1*-0.2*7/
 
         coeffs.append(J_zz)
         ops.append(qml.PauliZ(i) @ qml.PauliZ(i + 1))
-    
     # On-site X terms
     for i in range(N):
         coeffs.append(h)
-        ops.append(qml.PauliX(i))
-    
+        ops.append(qml.PauliX(i)) 
     return qml.Hamiltonian(coeffs, ops)
 
 # Example usage
 H = generate_hamiltonian(N)
-#print(H)
-
 # turn H into matrix 
 H_matrix = qml.matrix(H)
-#print(H_matrix)
+
 
 # Apply Trotterized evolution
-
-'''
-dev = qml.device("default.mixed", wires=N, shots=1e4)
-times = np.arange(dt, 5+dt, dt)
-exps = []
-
-for i in range(0, len(times)): 
-    @qml.qnode(dev)
-    def circuit():
-        qml.BasisState(np.zeros(N, dtype=int), wires=range(N))
-        if i==0:
-            #return qml.expval(qml.PauliZ(1)@qml.PauliZ(2))
-            return  qml.density_matrix(wires=range(N))
-        else:
-            qml.ApproxTimeEvolution(H, time=times[i], n=i)
-            #return qml.expval(H)
-            #return qml.expval(qml.PauliZ(1)@qml.PauliZ(2))
-            return  qml.density_matrix(wires=range(N))
-    #exp = circuit()
-    #exps.append(exp)
-#plt.plot(times, exps)
-#plt.show()
-'''
 
 dev = qml.device("default.mixed", wires=N, shots=1000)
 dev2 = qml.device("default.mixed", wires=N)
@@ -68,8 +42,6 @@ dev2 = qml.device("default.mixed", wires=N)
 def apply_depolarizing_noise(prob, wires):
     for wire in wires:
         qml.DepolarizingChannel(prob, wires=wire)
-
-
 
 
 @qml.qnode(dev2)
@@ -96,22 +68,8 @@ def trotter_circuit_zzxz_noisy(N,  time, dt, Jx, Jz, hx,  noise_prob):
             for n in range(0, N):
                 qml.RX(-2*dt*hx, n)
                 apply_depolarizing_noise(noise_prob, wires=[n])
-    
-    #return qml.expval(qml.I(0) @ qml.PauliZ(1)@qml.PauliZ(2)@qml.I(3)), qml.var(qml.I(0) @ qml.PauliZ(1)@qml.PauliZ(2)@qml.I(3))
+
     return qml.density_matrix(range(N))
-
-@qml.qnode(dev2)
-def circuit_trotter(H, time, n):
-    qml.BasisState(np.zeros(N, dtype=int), wires=range(N))
-    if n==0:
-        #return qml.expval(qml.PauliZ(1)@qml.PauliZ(2))
-        return  qml.density_matrix(wires=range(N))
-    else:
-        qml.ApproxTimeEvolution(H, time, n)
-        #return qml.expval(H)
-        #return qml.expval(qml.PauliZ(1)@qml.PauliZ(2))
-        return  qml.density_matrix(wires=range(N))
-
 
 
 def MEASURE_NOISY_QSP(rho, mmnt, shots_actual):
@@ -140,9 +98,18 @@ def RUN_NOISY_TROTTER(H, Jx, Jz, hx, N, time, dt, p, scaling, mmnt):
     depth = tape.graph.get_depth()  # Compute circuit depth
     print(depth)
 
+    # calculate number of shots
+    '''
+    delta = dt**2
+    epsilon = 3*delta
+    Mup = np.log10(2/epsilon)
+    lower= (1-(p*scaling[-1]))**(depth*2)
+    Mdown = lower*4*np.log(2)*N*3**2*delta**2
+    M = Mup/Mdown
+    '''
+    #fixed number of shots
     M = 5e6
     number_shots = int(M)
-    print(number_shots)
 
 
     # generate ideal trotter circuit and get values
@@ -161,15 +128,11 @@ def RUN_NOISY_TROTTER(H, Jx, Jz, hx, N, time, dt, p, scaling, mmnt):
         # build noise model for different noise c*p
         rho_for_meas = trotter_circuit_zzxz_noisy(N,  time, dt, Jx, Jz, hx,  c*p)
         var_e = np.trace(mmnt_matrix@mmnt_matrix@rho_for_meas)-(np.trace(mmnt_matrix@rho_for_meas))**2
-
         # perform measurment with correct number of shots
-        #e, var_e = qnode_measurement(rho_for_meas, mmnt, number_shots)
         e = MEASURE_NOISY_QSP(rho_for_meas, mmnt, number_shots)
-
         # saving e FOR C
         expdict["noisyexpectationarray_"+str(c)]=e
         var_y.append(var_e)
-        print(var_e)
 
     var_final = var_y
     expdict['variance']=var_final
@@ -177,7 +140,6 @@ def RUN_NOISY_TROTTER(H, Jx, Jz, hx, N, time, dt, p, scaling, mmnt):
 
     #expdict['shots']=number_shots
     
-
     return expdict
 
 # run and save full results
@@ -205,33 +167,15 @@ def run_full_trotter(N, H, Jx, Jz, hx, mmnt, dt,  time, p, scaling, lchoice='deg
     del savedict
     return 
 
-
+# choose correct parameters
 #taulist = np.arange(0.1, 5, 0.1)
-#taulist = np.arange(5.2, 20, 0.2)
-
-#noiselist = [1e-4, 1e-3, 1e-2]
+taulist = np.arange(5.2, 20, 0.2)
+noiselist = [1e-4, 1e-3, 1e-2]
 
 
 # check that taus in taulist are divisible by dt!!!!
-# for noisepergate in noiselist:
-#     for tau in taulist:
-#         print(tau)
-# #         #run_full_trotter(N, H, (0.1*-0.2*7/10), -0.2*7/10, (0.1*-0.2*7/10), (qml.Identity(0)@qml.PauliZ(1)@qml.PauliZ(2)@qml.Identity(3)@qml.Identity(4)@qml.Identity(5)@qml.Identity(6)@qml.Identity(7)), dt,  tau, noisepergate, [1, 1.1, 1.25, 1.3, 1.5, 1.75,  2, 3], lchoice='degree', Hlabel="TI8_dt01_fixed")
-#         run_full_trotter(N, H, (0.1*-0.2*7/10), -0.2*7/10, (0.1*-0.2*7/10), (qml.Identity(0)@qml.PauliZ(1)@qml.PauliZ(2)@qml.Identity(3)@qml.Identity(4)@qml.Identity(5)), dt,  tau, noisepergate, [1, 1.1, 1.25, 1.3, 1.5, 1.75,  2, 3], lchoice='degree', Hlabel="TI6_dt01_fixed")
+for noisepergate in noiselist:
+    for tau in taulist:
 
+        run_full_trotter(N, H, (0.1*-0.2*7/10), -0.2*7/10, (0.1*-0.2*7/10), (qml.Identity(0)@qml.PauliZ(1)@qml.PauliZ(2)@qml.Identity(3)@qml.Identity(4)@qml.Identity(5)@qml.Identity(6)@qml.Identity(7)), dt,  tau, noisepergate, [1, 1.1, 1.25, 1.3, 1.5, 1.75,  2, 3], lchoice='degree', Hlabel="TI8_dt01_fixed")
 
-'''
-es = []
-vars = []
-for tau in taulist:
-        rho_for_meas = trotter_circuit_zzxz_noisy(4,  tau, dt, (0.1*-0.2), -0.2, (0.1*-0.2),  0.001)
-        e, var_e = EXACT_MEASURE_NOISY_QSP(rho_for_meas, qml.PauliZ(1)@qml.PauliZ(2))
-        es.append(e)
-        vars.append(var_e)
-
-
-plt.plot(taulist, es)
-plt.show()
-plt.plot(taulist, vars)
-plt.show()
-'''
