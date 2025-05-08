@@ -417,36 +417,15 @@ def RUN_QSP(Hclass, QSPpars, mmntop, pU, scaling, numstates=0, ifsave=False, Hla
         print("class values,", cheatvals )
     return
 
-#QSPpars=qsp_params(0.75*Hclass.subnorm, preciexp, device = 'windows')
-#RUN_QSP(Hclass, QSPpars, mmntop,mmntpenny, 0,[1, 1.1, 1.25, 1.3, 1.5, 1.75,  2, 3], numstates=1, ifsave=False, pennyop=False, Hlabel="TI4")
 
 taulist = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.25, 4.5, 4.75, 5.0, 5.25, 5.5, 5.75, 6.0, 6.25, 6.5, 6.75, 7.0, 7.25, 7.5, 7.75, 8.0, 8.25, 8.5, 8.75, 9.0, 9.25, 9.5, 9.75, 10.0, 10.25, 10.5, 10.75, 11.0, 11.25, 11.5, 11.75, 12.0, 12.25, 12.5, 12.75, 13.0, 13.25, 13.5, 13.75, 14.0, 14.25, 14.5, 14.75, 15.0, 15.25, 15.5, 15.75, 16.0, 16.25, 16.5, 16.75, 17.0, 17.25, 17.5, 17.75, 18.0, 18.25, 18.5, 18.75, 19.0, 19.25, 19.5, 19.75, 20.0]
-#taulist = [5.0, 5.25, 5.5, 5.75, 6.0, 6.25, 6.5, 6.75, 7.0, 7.25, 7.5, 7.75, 8.0, 8.25, 8.5, 8.75, 9.0, 9.25, 9.5, 9.75, 10.0, 10.25, 10.5, 10.75, 11.0, 11.25, 11.5, 11.75, 12.0, 12.25, 12.5, 12.75, 13.0, 13.25, 13.5, 13.75, 14.0, 14.25, 14.5, 14.75, 15.0, 15.25, 15.5, 15.75, 16.0, 16.25, 16.5, 16.75, 17.0, 17.25, 17.5, 17.75, 18.0, 18.25, 18.5, 18.75, 19.0, 19.25, 19.5, 19.75, 20.0]
-#taulist = [0.1, 0.2, 0.3, 0.4, 0.6, 0.7, 0.8, 0.9, 1.1, 1.2, 2.3, 1.4, 1.6, 1.7, 1.8, 1.9, 2.1, 2.2, 2.3, 2.4, 2.6, 2.7, 2.8, 2.9, 3.1, 3.2, 3.3, 3.4, 3.6, 3.7, 3.8, 3.9, 4.1, 4.2, 4.3, 4.4,4.6, 4.7, 4.8, 4.9]
-
-#taulist = [25.0, 50.0, 75.0, 100.0, 125.0, 150.0, 175.0, 200.0, 225.0, 250.0, 275.0, 300.0, 325.0, 350.0, 375.0, 390.0]
-#taulist = [1, 2, 5, 10, 20, 25, 30, 25, 40, 50, 60, 70, 75, 80, 90, 100, 125, 150, 175, 200, 225, 250, 275, 300, 320, 325, 350]
-#taulist = np.arange(21.0, 50.0, 1)
-#taulist1 = np.arange(21.0, 50.0, 1)
-# taulist = [1, 2, 3, 4, 5 , 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-#taulist.extend(taulist1)
-#taulist = [1.0, 5.0, 15.0]
-#noiselist=np.arange(1.1e-4, 3e-1, 5e-4)
-#noiselist = [0.0015, 0.0025, 0.003, 0.0035, 0.004, 0.0055, 0.006]
 noiselist = [1e-4, 1e-3, 1e-2]
-#noiselist=[0]
-
-'''
 for noisepergate in noiselist:
     for tau in taulist:
-        print(tau)
-# # # #         # print(tau*Hclass.subnorm)
         QSPpars=qsp_params(tau,subnorm=1/np.sqrt(2), lchoice='order', orderval=3)
-        
         RUN_QSP(Hclass, QSPpars, mmntop,noisepergate,[1, 1.1, 1.25, 1.3, 1.5, 1.75,  2, 3], numstates=1, ifsave=True, pennyop=False, Hlabel="TI8_fixed_e2")
 
-'''
-# new mitigation function that checks if exponential fit is possible 
+
 def MITIGATION(scaling, l, datadict,  Hlabel="TI4"):
     values = [1, 1.1, 1.25, 1.3, 1.5, 1.75,  2, 3]
     indices = [values.index(value) for value in scaling]
@@ -492,6 +471,7 @@ def MITIGATION(scaling, l, datadict,  Hlabel="TI4"):
                 new_x = 0 
                 mitigated = exponential_model(new_x, *params)  
                 var = params[1]*np.exp(-1*params[1]*mitigated)**2*sum(variance)
+
                 if np.abs(mitigated)>=1.2:
                     print('nonsence in exp, trying Richardson')
                     mitigated, params = richardson(y, scaling)
@@ -506,10 +486,7 @@ def MITIGATION(scaling, l, datadict,  Hlabel="TI4"):
                             print('Mitigated value is still out of control, taking the point out')
                             mitigated = 0
                             var = 0
-            except RuntimeError:
-                print("Exponential model still failed with high maxfev, switching to Richardson.")
-                mitigated, params = richardson(y, scaling)
-                var = variance[0]*params[0]**2+variance[1]*params[1]**2
+
                 if np.abs(mitigated)>=1.2:
                     print('Use linear fit, as mitigated is very large')
                     params, _ = curve_fit(linear_model, scaling, y)
@@ -521,10 +498,14 @@ def MITIGATION(scaling, l, datadict,  Hlabel="TI4"):
                         print('Mitigated value is still out of control, taking the point out')
                         mitigated = 0
                         var = 0
+            finally:
+                pass 
+
         else:
             print(" Exponential failed, for different reason than maxfev. Trying Richardson model...")
             mitigated, params = richardson(y, scaling)
             var = variance[0]*params[0]**2+variance[1]*params[1]**2
+
             print('points', y)
             print('params', params)
             if np.abs(mitigated)>=1.2:
@@ -540,6 +521,7 @@ def MITIGATION(scaling, l, datadict,  Hlabel="TI4"):
 
 
     #print(mitigated, var)
+
     return mitigated, var
 
 # function to filter out 0 values of the mitigated (i set it to zero if mitigation fails tremendously)

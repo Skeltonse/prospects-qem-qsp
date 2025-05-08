@@ -77,7 +77,6 @@ def GETVALS(tau, degree=1, lchoice='order', orderval=5):
         
 
     ###getting a QSP circuit
-    # inst_tol=epsicoeff/3
     inst_tol=10**(-14)
     theta=np.linspace(0,np.pi, 1000)
     cz2list=lpf.LAUR_POLY_MULT(a, a)
@@ -90,7 +89,6 @@ def GETVALS(tau, degree=1, lchoice='order', orderval=5):
     c, d, probflag=pf.cd_PROCESS(gammaW, a, b,n, tol=inst_tol,plots=False)
     Plist, Qlist, E0=UNIFY_PLIST(a, -b, c, d, n, inst_tol)
     fcnvals=subnorm*np.exp(-1j*tau*np.cos(theta))
-    # fcnvals=lpf.LAUR_POLY_BUILD(a, n, np.exp(1j*theta))+1j*lpf.LAUR_POLY_BUILD(b, n, np.exp(1j*theta))
     epsiqsp=pf.NORM_EXTRACT_FROMP(Plist, Qlist, E0,a, b, n, fcnvals, theta)
 
     return epsicoeff, epsiqsp, n, tau
@@ -147,18 +145,14 @@ def GETVALS_ABBREV(tau, degree=1, lchoice='order', orderval=5):
     a=subnorm*(2)*a
     b=subnorm*(2)*b
     n=n
-        
-
+    
     return epsicoeff, n, tau
 
 def CIRCUIT_GROWTH():
     taulist1=np.around(np.linspace(0.1, 5, 50), 1).tolist()
     
-    # taulist1= [0.1, 0.2, 0.3, 0.4, 0.6, 0.7, 0.8, 0.9, 1.1, 1.2, 1.3, 1.4, 1.6, 1.7, 1.8, 1.9, 2.1, 2.2, 2.3, 2.4, 2.6, 2.7, 2.8, 2.9, 3.1, 3.2, 3.3, 3.4,3.6, 3.7, 3.8, 3.9, 4.1, 4.2, 4.3, 4.4, 4.6, 4.7, 4.8, 4.9]
     taulist2= [5.0, 5.25, 5.5, 5.75, 6.0, 6.25, 6.5, 6.75, 7.0, 7.25, 7.5, 7.75, 8.0, 8.25, 8.5, 8.75, 9.0, 9.25, 9.5, 9.75, 10.0, 10.25, 10.5, 10.75, 11.0, 11.25, 11.5, 11.75, 12.0, 12.25, 12.5, 12.75, 13.0, 13.25, 13.5, 13.75, 14.0, 14.25, 14.5, 14.75, 15.0, 15.25, 15.5, 15.75, 16.0, 16.25, 16.5, 16.75, 17.0, 17.25, 17.5, 17.75, 18.0, 18.25, 18.5, 18.75, 19.0, 19.25, 19.5, 19.75, 20.0]
     taulist=taulist1+taulist2
-    # taulist3= [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.25, 4.5, 4.75, 5.0, 5.25, 5.5, 5.75, 6.0, 6.25, 6.5, 6.75, 7.0, 7.25, 7.5, 7.75, 8.0, 8.25, 8.5, 8.75, 9.0, 9.25, 9.5, 9.75, 10.0, 10.25, 10.5, 10.75, 11.0, 11.25, 11.5, 11.75, 12.0, 12.25, 12.5, 12.75, 13.0, 13.25, 13.5, 13.75, 14.0, 14.25, 14.5, 14.75, 15.0, 15.25, 15.5, 15.75, 16.0, 16.25, 16.5, 16.75, 17.0, 17.25, 17.5, 17.75, 18.0, 18.25, 18.5, 18.75, 19.0, 19.25, 19.5, 19.75, 20.0]
-    # taulist3=[ 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7,0.75, 0.8, 0.9, 1.0, 1.1, 1.2,1.25, 1.3, 1.4,1.5, 1.6, 1.7, 1.75, 1.8, 1.9,2.0, 2.25, 2.5, 2.75,]
     taulist3=taulist
     nlist=np.zeros(len(taulist))
     dlist=np.zeros(len(taulist))
@@ -193,17 +187,13 @@ def CIRCUIT_GROWTH():
     plt.show()
 
     return
-# CIRCUIT_GROWTH()
+
 
 def TAUPOSSvsDEPTH():
     taulist1=np.around(np.linspace(0.1, 5, 50), 1).tolist()
-    
-    # taulist1= [0.1, 0.2, 0.3, 0.4, 0.6, 0.7, 0.8, 0.9, 1.1, 1.2, 1.3, 1.4, 1.6, 1.7, 1.8, 1.9, 2.1, 2.2, 2.3, 2.4, 2.6, 2.7, 2.8, 2.9, 3.1, 3.2, 3.3, 3.4,3.6, 3.7, 3.8, 3.9, 4.1, 4.2, 4.3, 4.4, 4.6, 4.7, 4.8, 4.9]
     taulist2= [5.0, 5.25, 5.5, 5.75, 6.0, 6.25, 6.5, 6.75, 7.0, 7.25, 7.5, 7.75, 8.0, 8.25, 8.5, 8.75, 9.0, 9.25, 9.5, 9.75, 10.0, 10.25, 10.5, 10.75, 11.0, 11.25, 11.5, 11.75, 12.0, 12.25, 12.5, 12.75, 13.0, 13.25, 13.5, 13.75, 14.0, 14.25, 14.5, 14.75, 15.0, 15.25, 15.5, 15.75, 16.0, 16.25, 16.5, 16.75, 17.0, 17.25, 17.5, 17.75, 18.0, 18.25, 18.5, 18.75, 19.0, 19.25, 19.5, 19.75, 20.0]
     taulist=taulist1+taulist2
     
-    # taulist3= [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.25, 4.5, 4.75, 5.0, 5.25, 5.5, 5.75, 6.0, 6.25, 6.5, 6.75, 7.0, 7.25, 7.5, 7.75, 8.0, 8.25, 8.5, 8.75, 9.0, 9.25, 9.5, 9.75, 10.0, 10.25, 10.5, 10.75, 11.0, 11.25, 11.5, 11.75, 12.0, 12.25, 12.5, 12.75, 13.0, 13.25, 13.5, 13.75, 14.0, 14.25, 14.5, 14.75, 15.0, 15.25, 15.5, 15.75, 16.0, 16.25, 16.5, 16.75, 17.0, 17.25, 17.5, 17.75, 18.0, 18.25, 18.5, 18.75, 19.0, 19.25, 19.5, 19.75, 20.0]
-    # taulist3=[ 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7,0.75, 0.8, 0.9, 1.0, 1.1, 1.2,1.25, 1.3, 1.4,1.5, 1.6, 1.7, 1.75, 1.8, 1.9,2.0, 2.25, 2.5, 2.75, 2.8, 2.9, 3.1, 3.2, 3.3, 3.4,3.6, 3.7, 3.8, 3.9, 4.1, 4.2, 4.3, 4.4, 4.6, 4.7, 4.8, 4.9]
     taulist3=taulist
     bestnlist=np.zeros(len(taulist))
     bestdlist=np.zeros(len(taulist))
@@ -213,7 +203,6 @@ def TAUPOSSvsDEPTH():
     bestdlist2=np.zeros(len(taulist3))
     rlimitlist2=np.zeros(len(taulist3))
 
-    # degreeoptions=[5, 7, 9,11,  13]
     degreeoptions=[5, 7, 9, 11, 13, 15, 17, 19,21, 23, 25, 27, 29, 31]
     j=0
     for tind, t in enumerate(taulist):
@@ -256,7 +245,6 @@ def TAUPOSSvsDEPTH():
     print(bestnlist2)
     print(np.average(rlimitlist/bestnlist))
     print(np.average(rlimitlist2/bestnlist2))
-    # plt.plot(taulist, bestdlist, linestyle='dashed', label=r'depth $D$')
     plt.ylabel(r"Growth of QSP circuit")
     plt.xlabel(r"Simulation time $\tau$")
     
@@ -270,7 +258,6 @@ def TAUPOSSvsDEPTH():
     plt.show()
     
     return
-# TAUPOSSvsDEPTH()
 def GROWTH_OF_EPSI():
     taulist1= [0.1, 0.2, 0.3, 0.4, 0.6, 0.7, 0.8, 0.9, 1.1, 1.2, 1.3, 1.4, 1.6, 1.7, 1.8, 1.9, 2.1, 2.2, 2.3, 2.4, 2.6, 2.7, 2.8, 2.9, 3.1, 3.2, 3.3, 3.4,3.6, 3.7, 3.8, 3.9, 4.1, 4.2, 4.3, 4.4, 4.6, 4.7, 4.8, 4.9]
     taulist2 = [5.0, 5.25, 5.5, 5.75, 6.0, 6.25, 6.5, 6.75, 7.0, 7.25, 7.5, 7.75, 8.0, 8.25, 8.5, 8.75, 9.0, 9.25, 9.5, 9.75, 10.0, 10.25, 10.5, 10.75, 11.0, 11.25, 11.5, 11.75, 12.0, 12.25, 12.5, 12.75, 13.0, 13.25, 13.5, 13.75, 14.0, 14.25, 14.5, 14.75, 15.0, 15.25, 15.5, 15.75, 16.0, 16.25, 16.5, 16.75, 17.0, 17.25, 17.5, 17.75, 18.0, 18.25, 18.5, 18.75, 19.0, 19.25, 19.5, 19.75, 20.0]
@@ -295,11 +282,6 @@ def GROWTH_OF_EPSI():
     
     plt.plot(-np.log10(1/np.concatenate((epsicoefflist, epsicoefflist2))), -np.log10(1/np.concatenate((epsiqsplist, epsiqsplist2))), marker='o', label=r'$\epsilon_{qsp}$')
 
-    # plt.plot(epsicoefflist2, epsiqsplist2, marker='o', label=r'$\epsilon_{qsp}$')
-    # plt.plot(epsicoefflist, 3*epsicoefflist, marker='o', label=r'y=3x')
-    # plt.plot(epsicoefflist, 10**(-4)*np.ones(len(epsicoefflist)), linestyle='dashed', label=r'$1\cdot 10^{-4}$')
-    # plt.plot(nlist, epsicoefflist,  label=r'$\epsilon_{coeff}$')
-    # plt.plot(nlist, epsiqsplist, marker='o', label=r'$\epsilon_{qsp}$')
     plt.ylabel(r"Error in QSP circuit $\epsilon_{QSP}$")
     plt.xlabel(r"Coefficient error $\epsilon_{coeff}$")
     pathname="prelim_plots.py"
@@ -312,12 +294,10 @@ def GROWTH_OF_EPSI():
     plt.show()
     print(max(epsiqsplist), max(epsiqsplist2))
     return
-# GROWTH_OF_EPSI()
+
 
 def FIXEDDEPTHS(depthlist):
     taulist1=np.around(np.linspace(0.1, 5, 50), 1).tolist()
-
-    # taulist1= [0.1, 0.2, 0.3, 0.4, 0.6, 0.7, 0.8, 0.9, 1.1, 1.2, 1.3, 1.4, 1.6, 1.7, 1.8, 1.9, 2.1, 2.2, 2.3, 2.4, 2.6, 2.7, 2.8, 2.9, 3.1, 3.2, 3.3, 3.4,3.6, 3.7, 3.8, 3.9, 4.1, 4.2, 4.3, 4.4, 4.6, 4.7, 4.8, 4.9]
     taulist2 = [5.0, 5.25, 5.5, 5.75, 6.0, 6.25, 6.5, 6.75, 7.0, 7.25, 7.5, 7.75, 8.0, 8.25, 8.5, 8.75, 9.0, 9.25, 9.5, 9.75, 10.0, 10.25, 10.5, 10.75, 11.0, 11.25, 11.5, 11.75, 12.0, 12.25, 12.5, 12.75, 13.0, 13.25, 13.5, 13.75, 14.0, 14.25, 14.5, 14.75, 15.0, 15.25, 15.5, 15.75, 16.0, 16.25, 16.5, 16.75, 17.0, 17.25, 17.5, 17.75, 18.0, 18.25, 18.5, 18.75, 19.0, 19.25, 19.5, 19.75, 20.0]
     taulist=np.append(taulist1, taulist2)
     epsilist=np.zeros(len(taulist))
@@ -325,7 +305,6 @@ def FIXEDDEPTHS(depthlist):
     for d in depthlist:
         epsilist=np.array([GETVALS(taulist[j], degree=d, lchoice='degree')[1] for j in range(len(taulist))])
         axs.plot(taulist, -np.log10(1/epsilist), marker='o', label=r"d="+str(d))
-    # print(epsilist)
     axs.set_xlabel(r'simulation time $\tau$')
     axs.set_ylabel(r'$\log\left(\epsilon_{QSP}\right)$')
 
@@ -338,115 +317,3 @@ def FIXEDDEPTHS(depthlist):
     plt.legend()
     plt.show()
     return
-
-# FIXEDDEPTHS(np.array([5,  9, 13]))
-# FIXEDDEPTHS(np.array([5, 9, 13, 17, 21, 25, 31]))
-# ####BIG APPENDIX ARRAY####
-# x=np.linspace(1, 20, 21)
-# y=np.linspace(0, 1, 21)
-
-# fig, axs = plt.subplots(2, 3, figsize=(12, 6), )
-
-# axs[0, 0].set_title(r'$p=0.001$')
-
-
-# axs[0, 1].set_title(r'$p=0.01$')
-
-
-# axs[0, 2].set_title(r'$p=0.1$')
-
-# axs[1, 0].set_title(r'$p=0.001$')
-
-
-# axs[1, 1].plot(x, y, color=colorlist[0], linestyle=linelist[0], )
-# axs[1, 1].plot(x, 2*y,color=colorlist[1], linestyle=linelist[1], )
-# axs[1, 1].plot(x, 3*y, color=colorlist[2], linestyle=linelist[2],)
-# axs[1, 1].plot(x, 4*y, color=colorlist[3],  linestyle=linelist[3],)
-# axs[1, 1].plot(x, 5*y,color=colorlist[4], linestyle=linelist[4],)
-# axs[1, 1].set_title(r'$p=0.01$')
-
-# axs[1, 2].plot(x, y, color=colorlist[0], linestyle=linelist[0], label={'ideal'})
-# axs[1, 2].plot(x, 2*y,color=colorlist[1], linestyle=linelist[1], label={'noisy'})
-# axs[1, 2].plot(x, 3*y, color=colorlist[2], linestyle=linelist[2], label={'linear'})
-# axs[1, 2].plot(x, 4*y, color=colorlist[3],  linestyle=linelist[3],label={'Richardson'})
-# axs[1, 2].plot(x, 5*y,color=colorlist[4], linestyle=linelist[4],label={'exp'})
-# axs[1, 2].set_title(r'$p=0.1$')
-
-# fig.supxlabel(r'simulation time $\tau$')
-# fig.supylabel(r'$\langle I_0\otimes Z_1\otimes Z_2\otimes I_3\rangle$')
-# ylabels=[r'scaling $\left[1, 1.25, 1.5\right]$', r'scaling $\left[1, 2, 3\right]$']
-# fig.suptitle(r'Times $\tau\in\{1, 1.1, 1.2,...5\}$')
-# fig.suptitle(r'Times $\tau\in\{1, 1.25, 1.5,...20\}$')
-# # for ax in axs.flat:
-# #     ax.set( ylabel=ylabels[])
-# axs.flat[0].set(ylabel=ylabels[0])
-# axs.flat[1].set(ylabel=ylabels[1])
-# # Hide x labels and tick labels for top plots and y ticks for right plots.
-# for ax in axs.flat:
-#     ax.label_outer()
-
-
-# plt.legend()
-# plt.show()
-
-####expectatio value vs noise for fixed time####
-# x2=np.linspace(0.001, 0.1, 21)
-# y2=np.linspace(0, 1, 21)
-
-# fig, axs = plt.subplots(3, 1, figsize=(6, 18), )
-# axs[0].plot(x2, y2,color=colorlist[0], linestyle=linelist[0])
-# axs[0].set_title(r'$\tau=1$')
-
-# axs[1].plot(x2, y2,  color=colorlist[0], linestyle=linelist[0])
-# axs[1].set_title(r'$\tau=5$')
-
-# axs[2].plot(x2, y2,color=colorlist[0], linestyle=linelist[0] )
-# axs[ 2].set_title(r'$\tau=5$')
-
-
-# fig.supxlabel(r'noise $p$')
-# fig.supylabel(r'$\langle I_0\otimes Z_1\otimes Z_2\otimes I_3\rangle$')
-
-# plt.show()
-
-
-#####PLOT FOR THE MAIN TEXT####
-# x3=np.linspace(1, 20, 21)
-# y3=np.linspace(0, 1, 21)
-
-# fig, axs = plt.subplots(1, 1, figsize=(10, 6), )
-
-# axs.plot(x3, y3, color=colorlist[0], linestyle=linelist[0], label={'ideal'})
-# axs.plot(x3, 2*y3,color=colorlist[1], linestyle=linelist[1], label={'noisy'})
-# axs.plot(x3, 3*y3, color=colorlist[2], linestyle=linelist[2], label={'linear'})
-# axs.set_title(r'Times $\tau\in\{1, 1.1, 1.2,...5\}$, $p=0.1$')
-
-# axs.set_xlabel(r'simulation time $\tau$')
-# axs.set_ylabel(r'$\langle I_0\otimes Z_1\otimes Z_2\otimes I_3\rangle$')
-# # fig.suptitle(r'Times $\tau\in\{1, 1.25, 1.5,...20\}$')
-# # for ax in axs.flat:
-# #     ax.set( ylabel=ylabels[])
-# #fig.supylabel(ylabel=ylabels[0])
-# # Hide x labels and tick labels for top plots and y ticks for right plots.
-
-# pathname="prelim_plots.py"
-# current_path=os.path.abspath(__file__)
-# coeff_path=current_path.replace(pathname, "")
-# save_path=os.path.join(coeff_path,"figures")
-# save_path = os.path.normpath(save_path)
-# tikzplotlib.save(os.path.join(save_path, "test.tex"), flavor="context")
-
-
-# plt.legend()
-# plt.show()
-def ORACLEORDERMAG(P, n, epsilon):
-    nanc=np.ceil(np.log2(P))
-    print(nanc, P*2**n)
-    factorsanc=np.log10(nanc)/nanc
-    tildefactors=np.log10(np.log10(nanc))
-    factors=P*n*np.log10(1/epsilon)
-    return np.ceil(factors*factorsanc)
-
-# print(ORACLEORDERMAG(10, 4, 0.00013592920182238088/31))
-# print(ORACLEORDERMAG(16, 6, 0.00013592920182238088/31))
-# print(ORACLEORDERMAG(22, 8, 0.00013592920182238088/31))

@@ -174,8 +174,8 @@ noiselist = [1e-4, 1e-3, 1e-2]
 
 
 # check that taus in taulist are divisible by dt!!!!
-for noisepergate in noiselist:
-    for tau in taulist:
+# for noisepergate in noiselist:
+#     for tau in taulist:
 
-        run_full_trotter(N, H, (0.1*-0.2*7/10), -0.2*7/10, (0.1*-0.2*7/10), (qml.Identity(0)@qml.PauliZ(1)@qml.PauliZ(2)@qml.Identity(3)@qml.Identity(4)@qml.Identity(5)@qml.Identity(6)@qml.Identity(7)), dt,  tau, noisepergate, [1, 1.1, 1.25, 1.3, 1.5, 1.75,  2, 3], lchoice='degree', Hlabel="TI8_dt01_fixed")
+#         run_full_trotter(N, H, (0.1*-0.2*7/10), -0.2*7/10, (0.1*-0.2*7/10), (qml.Identity(0)@qml.PauliZ(1)@qml.PauliZ(2)@qml.Identity(3)@qml.Identity(4)@qml.Identity(5)@qml.Identity(6)@qml.Identity(7)), dt,  tau, noisepergate, [1, 1.1, 1.25, 1.3, 1.5, 1.75,  2, 3], lchoice='degree', Hlabel="TI8_dt01_fixed")
 
